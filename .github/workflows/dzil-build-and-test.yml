@@ -16,7 +16,7 @@ jobs:
     name: Build distribution
     runs-on: ubuntu-20.04
     container:
-      image: perldocker/perl-tester:5.32
+      image: perldocker/perl-tester:5.34
     steps:
       - uses: actions/checkout@v2
       - name: Run Tests
@@ -35,7 +35,7 @@ jobs:
     needs: build-job
     runs-on: ubuntu-20.04
     container:
-      image: perldocker/perl-tester:5.32
+      image: perldocker/perl-tester:5.34
     steps:
       - uses: actions/checkout@v2 # codecov wants to be inside a Git repository
       - uses: actions/download-artifact@v2
@@ -54,9 +54,6 @@ jobs:
       matrix:
         os: [ubuntu-20.04]
         perl-version:
-          - "5.8"
-          - "5.10"
-          - "5.12"
           - "5.14"
           - "5.16"
           - "5.18"
@@ -67,6 +64,7 @@ jobs:
           - "5.28"
           - "5.30"
           - "5.32"
+          - "5.34"
     name: perl ${{ matrix.perl-version }} on ${{ matrix.os }}
     steps:
       - name: set up perl
@@ -81,8 +79,8 @@ jobs:
         uses: perl-actions/install-with-cpm@v1
         with:
           cpanfile: "cpanfile"
-          args: "--with-suggests --with-recommends --with-test --with-develop"
-      - run: prove -lr t xt
+          args: "--with-suggests --with-recommends --with-test"
+      - run: prove -lr t
         env:
           AUTHOR_TESTING: 1
           RELEASE_TESTING: 1
@@ -94,9 +92,6 @@ jobs:
       matrix:
         os: [macos-latest]
         perl-version:
-          - "5.8"
-          - "5.10"
-          - "5.12"
           - "5.14"
           - "5.16"
           - "5.18"
@@ -107,6 +102,7 @@ jobs:
           - "5.28"
           - "5.30"
           - "5.32"
+          - "5.34"
     name: perl ${{ matrix.perl-version }} on ${{ matrix.os }}
     steps:
       - name: set up perl
@@ -121,8 +117,8 @@ jobs:
         uses: perl-actions/install-with-cpm@v1
         with:
           cpanfile: "cpanfile"
-          args: "--with-suggests --with-recommends --with-test --with-develop"
-      - run: prove -lr t xt
+          args: "--with-suggests --with-recommends --with-test"
+      - run: prove -lr t
         env:
           AUTHOR_TESTING: 1
           RELEASE_TESTING: 1

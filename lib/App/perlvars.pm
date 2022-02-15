@@ -1,5 +1,136 @@
-use strict;
-use warnings;
 package App::perlvars;
 
+use Moo;
+use autodie;
+
+our $VERSION = '0.000001';
+
+use Path::Tiny qw( path );
+use PPI::Document ();
+use Test::Vars import => [qw( test_vars )];
+
+has ignore_file => (
+    is        => 'ro',
+    predicate => '_has_ignore_file',
+);
+
+has _ignore_for_package => (
+    is       => 'ro',
+    init_arg => undef,
+    lazy     => 1,
+    builder  => '_build_ignore_for_package',
+);
+
+sub BUILD {
+    my $self = shift;
+
+    # We need to read the file before we start checking anything so we can die
+    # if it contains bad lines and not have it look like a failure in a
+    # particular file we're tidying.
+    $self->_ignore_for_package;
+
+    return;
+}
+
+sub validate_file {
+    my $self = shift;
+    my $file = path(shift);
+    unless ( $file->exists ) {
+        return ( 1, "$file could not be found" );
+    }
+    if ( $file->is_dir ) {
+        return ( 1, "$file is a dir" );
+    }
+
+    my $doc = PPI::Document->new("$file");
+    return ( 2, "$file could not be parsed as Perl" ) unless $doc;
+
+    my $package_stmt = $doc->find_first('PPI::Statement::Package')
+        or return ( 0, 'no package found' );
+
+    my ( $exit_code, @msgs ) = test_vars(
+        "$file",
+        \&_result_handler,
+        %{ $self->_ignore_for_package->{ $package_stmt->namespace } || {} },
+    );
+
+    return $exit_code, undef, @msgs;
+}
+
+sub _build_ignore_for_package {
+    my $self = shift;
+
+    return {} unless $self->_has_ignore_file;
+
+    my %vars;
+    my %regexes;
+
+    open my $fh, '<', $self->ignore_file;
+    while (<$fh>) {
+        next unless /\S/;
+
+        chomp;
+        my ( $package, $ignore ) = split /\s*=\s*/;
+        unless ( defined $package && defined $ignore ) {
+            die 'Invalid line in ' . $self->ignore_file . ": $_\n";
+        }
+
+        if ( $ignore =~ m{^qr} ) {
+            local $@ = undef;
+            ## no critic (BuiltinFunctions::ProhibitStringyEval)
+            $ignore = eval $ignore;
+            ## use critic
+            die $@ if $@;
+
+            push @{ $regexes{$package} }, $ignore;
+        }
+        else {
+            push @{ $vars{$package} }, $ignore;
+        }
+    }
+
+    my %ignore;
+    for my $package ( keys %regexes ) {
+        my @re = @{ $regexes{$package} };
+        $ignore{$package}{ignore_if} = sub {
+            for my $re (@re) {
+                return 1 if $_ =~ /$re/;
+            }
+            return 0;
+        };
+    }
+
+    for my $package ( keys %vars ) {
+        $ignore{$package}{ignore_vars}{$_} = 1 for @{ $vars{$package} };
+    }
+
+    return \%ignore;
+}
+
+sub _result_handler {
+    shift;
+    my $exit_code = shift;
+    my $results   = shift;
+
+    my @errors = map { $_->[1] } grep { $_->[0] eq 'diag' } @{$results};
+    return $exit_code, @errors;
+}
+
 1;
+
+__END__
+
+# ABSTRACT: CLI tool to detect unused variables in Perl modules
+
+=pod
+
+=head2 ignore_file
+
+A file containing a list of variables to ignore on a per-package basis.
+
+=head2 validate_file
+
+Path to a file which will be validated. Returns:
+
+=cut
+

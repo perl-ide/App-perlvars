@@ -1,0 +1,60 @@
+#!perl
+
+use strict;
+use warnings;
+use v5.14;
+
+use App::perlvars ();
+use Getopt::Long::Descriptive qw( describe_options );
+
+my ( $opt, $usage ) = describe_options(
+    'perlvars %o file',
+    [ 'ignore-file|i=s', 'A file containing an ignore list', ],
+    [],
+    [ 'help', 'print usage message and exit', { shortcircuit => 1 } ],
+    [
+        'verbose-help', 'print verbose usage message and exit',
+        { shortcircuit => 1 }
+    ],
+);
+
+say( $usage->text ), exit if $opt->help;
+
+my $filename = shift @ARGV;
+
+unless ($filename) {
+    require Pod::Usage;
+    say $usage->text;
+    Pod::Usage::pod2usage();
+}
+
+my ( $exit_code, $error_message, @notes )
+    = App::perlvars->new(
+    $opt->ignore_file ? ( ignore_file => $opt->ignore_file ) : () )
+    ->validate_file($filename);
+
+if ($error_message) {
+    say STDERR $error_message;
+    exit($exit_code);
+}
+
+if ( $exit_code > 0 ) {
+    say STDERR $_ for @notes;
+}
+
+exit($exit_code);
+
+# PODNAME: perlvars
+# ABSTRACT: A command line utility for detecting unused Perl variables
+
+__END__
+
+=pod
+
+=head1 SYNOPSIS
+
+Detect unused variables in Perl code.
+
+    perlimports path/to/file
+
+=cut
