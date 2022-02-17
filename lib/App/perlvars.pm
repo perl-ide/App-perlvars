@@ -43,10 +43,10 @@ sub validate_file {
     }
 
     my $doc = PPI::Document->new("$file");
-    return ( 2, "$file could not be parsed as Perl" ) unless $doc;
+    return ( 1, "$file could not be parsed as Perl" ) unless $doc;
 
     my $package_stmt = $doc->find_first('PPI::Statement::Package')
-        or return ( 0, 'no package found' );
+        or return ( 0, "$file contains no package" );
 
     my ( $exit_code, @msgs ) = test_vars(
         "$file",

@@ -1,3 +1,5 @@
+#!perl
+
 use strict;
 use warnings;
 
@@ -54,6 +56,17 @@ subtest 'ignore file is used' => sub {
 subtest 'file has no errors' => sub {
     script_runs(
         [ 'script/perlvars', 'test-data/lib/Local/NoUnused.pm' ],
+    );
+};
+
+subtest 'multiple files are checked' => sub {
+    script_runs(
+        [
+            'script/perlvars',
+            '--ignore-file', 'test-data/ignore-file',
+            'test-data/lib/Local/Unused.pm',
+            'test-data/lib/Local/NoUnused.pm',
+        ]
     );
 };
 

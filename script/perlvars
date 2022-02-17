@@ -18,29 +18,39 @@ my ( $opt, $usage ) = describe_options(
     ],
 );
 
-say( $usage->text ), exit if $opt->help;
+if ( $opt->help ) {
+    say( $usage->text );
+    exit;
+}
 
-my $filename = shift @ARGV;
+my $exit_code = 0;
 
-unless ($filename) {
+my @files = @ARGV;
+
+unless (@files) {
     require Pod::Usage;
     say $usage->text;
     Pod::Usage::pod2usage();
 }
 
-my ( $exit_code, $error_message, @notes )
-    = App::perlvars->new(
-    $opt->ignore_file ? ( ignore_file => $opt->ignore_file ) : () )
-    ->validate_file($filename);
+my $vars = App::perlvars->new(
+    $opt->ignore_file ? ( ignore_file => $opt->ignore_file ) : () );
 
-if ($error_message) {
-    say STDERR $error_message;
-    exit($exit_code);
+for my $file (@files) {
+    my ( $code, $error_message, @notes ) = $vars->validate_file($file);
+
+    if ($error_message) {
+        say STDERR $error_message;
+        exit($code);
+    }
+
+    if ( $code > 0 ) {
+        $exit_code = $code;
+        say STDERR $_ for @notes;
+    }
 }
 
-if ( $exit_code > 0 ) {
-    say STDERR $_ for @notes;
-}
+say 'All files ok' unless $exit_code;
 
 exit($exit_code);
 
