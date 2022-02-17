@@ -1,4 +1,4 @@
 Local::Unused = $unused
 Local::Unused = $one
 Local::Unused = $two
-Local::Unused = $three
+Local::Unused = qr/^\$.*hree$/
