@@ -125,6 +125,11 @@ __END__
 
 =pod
 
+=head1 DESCRIPTION
+
+You probably don't want to use this class directly. See L<perlvars> for
+documentation on how to use the command line interface.
+
 =head2 ignore_file
 
 The path to a file containing a list of variables to ignore on a per-package
@@ -139,7 +144,7 @@ regex/>. For example:
 =head2 validate_file
 
 Path to a file which will be validated. Returns an exit code, an error message
-and a list of unusued variables.
+and a list of unused variables.
 
 =cut
 

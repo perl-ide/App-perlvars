@@ -1,5 +1,4 @@
 [![Actions Status](https://github.com/oalders/App-perlvars/workflows/dzil-build-and-test/badge.svg)](https://github.com/oalders/App-perlvars/actions)
-[![Coverage Status](https://coveralls.io/repos/oalders/App-perlvars/badge.svg?branch=master)](https://coveralls.io/r/oalders/App-perlvars?branch=master)
 [![codecov](https://codecov.io/gh/oalders/App-perlvars/branch/master/graph/badge.svg)](https://codecov.io/gh/oalders/App-perlvars)
 [![Kwalitee status](https://cpants.cpanauthors.org/dist/App-perlvars.png)](https://cpants.cpanauthors.org/dist/App-perlvars)
 [![GitHub tag](https://img.shields.io/github/tag/oalders/App-perlvars.svg)]()
@@ -13,13 +12,26 @@ App::perlvars - CLI tool to detect unused variables in Perl modules
 
 version 0.000001
 
+# DESCRIPTION
+
+You probably don't want to use this class directly. See [perlvars](https://metacpan.org/pod/perlvars) for
+documentation on how to use the command line interface.
+
 ## ignore\_file
 
-A file containing a list of variables to ignore on a per-package basis.
+The path to a file containing a list of variables to ignore on a per-package
+basis. The pattern is `Module::Name = $variable` or `Module::Name = qr/some
+regex/`. For example:
+
+    Local::Unused = $unused
+    Local::Unused = $one
+    Local::Unused = $two
+    Local::Unused = qr/^\$.*hree$/
 
 ## validate\_file
 
-Path to a file which will be validated. Returns:
+Path to a file which will be validated. Returns an exit code, an error message
+and a list of unused variables.
 
 # AUTHOR
 

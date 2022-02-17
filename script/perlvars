@@ -74,6 +74,11 @@ file.
 
 See the documentation for L<App::perlvars> for the format of the ignore file.
 
+If you'd like to check every .pm file in your lib directory, you can try
+something like:
+
+    find lib | grep pm$ | xargs perlvars
+
 =head1 DESCRIPTION
 
 This script is a wrapper around L<Test::Vars>, which tries to find unused
