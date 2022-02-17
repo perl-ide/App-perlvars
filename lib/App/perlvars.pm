@@ -127,11 +127,19 @@ __END__
 
 =head2 ignore_file
 
-A file containing a list of variables to ignore on a per-package basis.
+The path to a file containing a list of variables to ignore on a per-package
+basis. The pattern is C<Module::Name = $variable> or C<Module::Name = qr/some
+regex/>. For example:
+
+    Local::Unused = $unused
+    Local::Unused = $one
+    Local::Unused = $two
+    Local::Unused = qr/^\$.*hree$/
 
 =head2 validate_file
 
-Path to a file which will be validated. Returns:
+Path to a file which will be validated. Returns an exit code, an error message
+and a list of unusued variables.
 
 =cut
 

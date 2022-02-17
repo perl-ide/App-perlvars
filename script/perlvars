@@ -65,6 +65,27 @@ __END__
 
 Detect unused variables in Perl code.
 
-    perlimports path/to/file
+    perlvars file1 file2
+
+You can also ignore arbitrary variables on a per-package basis, using an ignore
+file.
+
+    perlvars --ignore-file ignore-list.txt file1 file2
+
+See the documentation for L<App::perlvars> for the format of the ignore file.
+
+=head1 DESCRIPTION
+
+This script is a wrapper around L<Test::Vars>, which tries to find unused
+variables in your Perl code. Please note that since L<Test::Vars> only finds
+unused variables contained within packages, code which does not have an
+explicit package name will not be checked.
+
+=head1 SEE ALSO
+
+You may also wish to use
+L<Perl::Critic::Policy::Variables::ProhibitUnusedVarsStricter> which can find
+some cases which L<Test::Vars> is not able to detect. It also does not require
+the code to be inside a package.
 
 =cut
