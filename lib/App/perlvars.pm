@@ -65,14 +65,14 @@ sub _build_ignore_for_package {
     my %vars;
     my %regexes;
 
-    open my $fh, '<', $self->ignore_file;
-    while (<$fh>) {
-        next unless /\S/;
+    my $file  = path( $self->ignore_file );
+    my @lines = $file->lines( { chomp => 1 } );
+    for my $line (@lines) {
+        next unless $line =~ /\S/;
 
-        chomp;
-        my ( $package, $ignore ) = split /\s*=\s*/;
+        my ( $package, $ignore ) = split( /\s*=\s*/, $line );
         unless ( defined $package && defined $ignore ) {
-            die 'Invalid line in ' . $self->ignore_file . ": $_\n";
+            die 'Invalid line in ' . $self->ignore_file . ": $line\n";
         }
 
         if ( $ignore =~ m{^qr} ) {
