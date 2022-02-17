@@ -93,8 +93,9 @@ sub _build_ignore_for_package {
     for my $package ( keys %regexes ) {
         my @re = @{ $regexes{$package} };
         $ignore{$package}{ignore_if} = sub {
+            my $check = shift;
             for my $re (@re) {
-                return 1 if $_ =~ /$re/;
+                return 1 if $check =~ /$re/;
             }
             return 0;
         };
