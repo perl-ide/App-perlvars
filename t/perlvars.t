@@ -4,10 +4,10 @@ use strict;
 use warnings;
 
 use Test::More import => [qw( done_testing subtest )];
-use Test::Script 1.27 qw(
+use Test::Script qw(
     script_compiles
+    script_fails
     script_runs
-    script_stderr_is
     script_stderr_like
 );
 
