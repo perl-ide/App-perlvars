@@ -16,7 +16,7 @@ on 'test' => sub {
   requires "ExtUtils::MakeMaker" => "0";
   requires "File::Spec" => "0";
   requires "Test::More" => "0";
-  requires "Test::Script" => "1.27";
+  requires "Test::Script" => "1.29";
   requires "lib" => "0";
   requires "perl" => "v5.14.0";
 };
