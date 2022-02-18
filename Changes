@@ -1,5 +1,7 @@
 Revision history for App-perlvars
 
+{{$NEXT}}
+
 0.000002  2022-02-18 20:19:40Z
     - Bump minimum version of Test::Script to 1.29 (GH#2) (Olaf Alders)
 
