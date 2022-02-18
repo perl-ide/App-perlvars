@@ -37,6 +37,7 @@ my $vars = App::perlvars->new(
     $opt->ignore_file ? ( ignore_file => $opt->ignore_file ) : () );
 
 for my $file (@files) {
+    say $file;
     my ( $code, $error_message, @notes ) = $vars->validate_file($file);
 
     if ($error_message) {
