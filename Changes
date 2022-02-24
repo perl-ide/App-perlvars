@@ -1,6 +1,7 @@
 Revision history for App-perlvars
 
 {{$NEXT}}
+    - Don't index test-data directory
 
 0.000003  2022-02-24 17:13:40Z
     - Document more clearly the limitations of Test::Vars
