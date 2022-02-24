@@ -17,6 +17,7 @@
       "directory" : [
          "examples",
          "t",
+         "test-data",
          "xt"
       ]
    },
@@ -95,7 +96,7 @@
          "web" : "https://github.com/oalders/App-perlvars"
       }
    },
-   "version" : "0.000003",
+   "version" : "0.000004",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.030003"
@@ -653,7 +654,7 @@
                   "branch" : null,
                   "changelog" : "Changes",
                   "signed" : 0,
-                  "tag" : "v0.000003",
+                  "tag" : "v0.000004",
                   "tag_format" : "v%V",
                   "tag_message" : "v%V"
                },
