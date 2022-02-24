@@ -3,7 +3,7 @@ package App::perlvars;
 use Moo;
 use autodie;
 
-our $VERSION = '0.000004';
+our $VERSION = '0.000005';
 
 use Path::Tiny qw( path );
 use PPI::Document ();
