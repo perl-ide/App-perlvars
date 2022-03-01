@@ -1,5 +1,5 @@
 [![Actions Status](https://github.com/oalders/App-perlvars/workflows/dzil-build-and-test/badge.svg)](https://github.com/oalders/App-perlvars/actions)
-[![codecov](https://codecov.io/gh/oalders/App-perlvars/branch/master/graph/badge.svg)](https://codecov.io/gh/oalders/App-perlvars)
+[![codecov](https://codecov.io/gh/oalders/App-perlvars/branch/main/graph/badge.svg)](https://codecov.io/gh/oalders/App-perlvars)
 [![Kwalitee status](https://cpants.cpanauthors.org/dist/App-perlvars.png)](https://cpants.cpanauthors.org/dist/App-perlvars)
 [![GitHub tag](https://img.shields.io/github/tag/oalders/App-perlvars.svg)]()
 [![Cpan license](https://img.shields.io/cpan/l/App-perlvars.svg)](https://metacpan.org/release/App-perlvars)
