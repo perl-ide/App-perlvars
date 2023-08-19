@@ -18,8 +18,14 @@ subtest 'pkg without unused vars' => sub {
     my ( $exit_code, $msg, @errors )
         = App::perlvars->new->validate_file(
         'test-data/lib/Local/NoUnused.pm');
-    is( $exit_code,     0, '0 exit code' );
-    is( scalar @errors, 0, 'found no errors' );
+    if ( $] < 5.037 ) {
+        is( $exit_code,     0, '0 exit code' );
+        is( scalar @errors, 0, 'found no errors' );
+    }
+    else {
+        ok( $exit_code, 'non-zero exit code' );
+        is( scalar @errors, 1, 'found one error' );
+    }
 };
 
 subtest 'file not found' => sub {
