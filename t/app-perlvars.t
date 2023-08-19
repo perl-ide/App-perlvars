@@ -10,7 +10,7 @@ subtest 'pkg with unused vars' => sub {
     my ( $exit_code, $msg, @errors )
         = App::perlvars->new->validate_file('test-data/lib/Local/Unused.pm');
     ok( $exit_code, 'non-zero exit code' );
-    my $unused_count = ($] >= 5.037)? 5 : 4; # Perl 5.37 and later finds 5.
+    my $unused_count = ( $] >= 5.037 ) ? 5 : 4; # Perl 5.37 and later finds 5.
     is( scalar @errors, $unused_count, 'found all errors' );
 };
 
