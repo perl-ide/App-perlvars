@@ -51,7 +51,7 @@ jobs:
     needs: build-job
     runs-on: "ubuntu-latest"
     strategy:
-      fail-fast: true
+      # fail-fast: true
       matrix:
         os: [ubuntu-20.04]
         perl-version:
@@ -91,7 +91,7 @@ jobs:
     needs: ubuntu-test-job
     runs-on: "macos-latest"
     strategy:
-      fail-fast: true
+      # fail-fast: true
       matrix:
         os: [macos-latest]
         perl-version:
@@ -106,6 +106,8 @@ jobs:
           - "5.30"
           - "5.32"
           - "5.34"
+          - "5.36"
+          - "5.38"
     name: perl ${{ matrix.perl-version }} on ${{ matrix.os }}
     steps:
       - name: set up perl
@@ -129,7 +131,7 @@ jobs:
     needs: ubuntu-test-job
     runs-on: "windows-latest"
     strategy:
-      fail-fast: true
+      # fail-fast: true
       matrix:
         os: [windows-latest]
         perl-version:
@@ -142,6 +144,10 @@ jobs:
           - "5.26"
           - "5.28"
           - "5.30"
+          - "5.32"
+          - "5.34"
+          - "5.36"
+          - "5.38"
     name: perl ${{ matrix.perl-version }} on ${{ matrix.os }}
     steps:
       - name: set up perl
