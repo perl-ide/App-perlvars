@@ -5,7 +5,7 @@ use autodie;
 
 our $VERSION = '0.000005';
 
-use Path::Tiny qw( path );
+use Path::Tiny    qw( path );
 use PPI::Document ();
 use Test::Vars import => [qw( test_vars )];
 
