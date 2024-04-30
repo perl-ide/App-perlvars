@@ -5,10 +5,10 @@ use warnings;
 
 use Test::More import => [qw( done_testing subtest )];
 use Test::Script qw(
-    script_compiles
-    script_fails
-    script_runs
-    script_stderr_like
+  script_compiles
+  script_fails
+  script_runs
+  script_stderr_like
 );
 
 # For perl version 5.37.3 there was a change in the Perl internals such that
@@ -37,26 +37,18 @@ subtest 'file has errors' => sub {
 };
 
 subtest 'file has no package' => sub {
-    my @script = (
-        'script/perlvars',
-        't/perlvars.t',
-    );
-    script_runs( \@script );
+    script_runs( [ 'script/perlvars', 't/perlvars.t' ] );
 };
 
 subtest 'arg is a dir' => sub {
-    script_fails(
-        [ 'script/perlvars', 't' ],
-        { exit => 1 },
-    );
+    script_fails( [ 'script/perlvars', 't' ], { exit => 1 }, );
     script_stderr_like(qr{t is a dir});
 };
 
 subtest 'ignore file is used' => sub {
     my @script = (
-        'script/perlvars',
-        '--ignore-file', 'test-data/ignore-file',
-        'test-data/lib/Local/Unused.pm',
+        'script/perlvars',       '--ignore-file',
+        'test-data/ignore-file', 'test-data/lib/Local/Unused.pm',
     );
     if ($perl_old) {
         script_runs( \@script );
@@ -67,10 +59,7 @@ subtest 'ignore file is used' => sub {
 };
 
 subtest 'file has no errors' => sub {
-    my @script = (
-        'script/perlvars',
-        'test-data/lib/Local/NoUnused.pm',
-    );
+    my @script = ( 'script/perlvars', 'test-data/lib/Local/NoUnused.pm', );
     if ($perl_old) {
         script_runs( \@script );
     }
@@ -81,9 +70,8 @@ subtest 'file has no errors' => sub {
 
 subtest 'multiple files are checked' => sub {
     my @script = (
-        'script/perlvars',
-        '--ignore-file', 'test-data/ignore-file',
-        'test-data/lib/Local/Unused.pm',
+        'script/perlvars',       '--ignore-file',
+        'test-data/ignore-file', 'test-data/lib/Local/Unused.pm',
         'test-data/lib/Local/NoUnused.pm',
     );
     if ($perl_old) {
