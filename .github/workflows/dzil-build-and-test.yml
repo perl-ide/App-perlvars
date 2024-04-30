@@ -65,6 +65,8 @@ jobs:
           - "5.30"
           - "5.32"
           - "5.34"
+          - "5.36"
+          - "5.38"
     name: perl ${{ matrix.perl-version }} on ${{ matrix.os }}
     steps:
       - name: set up perl
@@ -103,6 +105,8 @@ jobs:
           - "5.30"
           - "5.32"
           - "5.34"
+          - "5.36"
+          - "5.38"
     name: perl ${{ matrix.perl-version }} on ${{ matrix.os }}
     steps:
       - name: set up perl
@@ -139,6 +143,10 @@ jobs:
           - "5.26"
           - "5.28"
           - "5.30"
+          - "5.32"
+          - "5.34"
+          - "5.36"
+          - "5.38"
     name: perl ${{ matrix.perl-version }} on ${{ matrix.os }}
     steps:
       - name: set up perl
