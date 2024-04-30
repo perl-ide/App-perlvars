@@ -31,7 +31,7 @@ subtest 'pkg without unused vars' => sub {
     }
     else {
         is( $exit_code,     256, 'exit code 256' );
-        is( scalar @errors, 1,   'found 1 error' );
+        is( scalar @errors, 1, 'found 1 error' );
     }
 };
 

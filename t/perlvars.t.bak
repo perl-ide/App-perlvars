@@ -5,10 +5,10 @@ use warnings;
 
 use Test::More import => [qw( done_testing subtest )];
 use Test::Script qw(
-    script_compiles
-    script_fails
-    script_runs
-    script_stderr_like
+  script_compiles
+  script_fails
+  script_runs
+  script_stderr_like
 );
 
 # For perl version 5.37.3 there was a change in the Perl internals such that
@@ -37,7 +37,7 @@ subtest 'file has errors' => sub {
 };
 
 subtest 'file has no package' => sub {
-    script_runs( [ 'script/perlvars', 't/perlvars.t' ] );
+    script_runs( ['script/perlvars', 't/perlvars.t'] );
 };
 
 subtest 'arg is a dir' => sub {
