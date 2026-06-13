@@ -16,7 +16,7 @@ jobs:
     container:
       image: perldocker/perl-tester:5.42
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@v6.0.3
       - name: Run Tests
         env:
           AUTHOR_TESTING: 1
@@ -34,7 +34,7 @@ jobs:
     container:
       image: perldocker/perl-tester:5.42
     steps:
-      - uses: actions/checkout@v6.0.2 # codecov wants to be inside a Git repository
+      - uses: actions/checkout@v6.0.3 # codecov wants to be inside a Git repository
       - uses: actions/download-artifact@v8
         with:
           name: build_dir
@@ -64,7 +64,7 @@ jobs:
     name: perl ${{ matrix.perl-version }} on ${{ matrix.os }}
     steps:
       - name: set up perl
-        uses: shogo82148/actions-setup-perl@v1.41.0
+        uses: shogo82148/actions-setup-perl@v1.41.1
         with:
           perl-version: ${{ matrix.perl-version }}
       - uses: actions/download-artifact@v8
@@ -101,7 +101,7 @@ jobs:
     name: perl ${{ matrix.perl-version }} on ${{ matrix.os }}
     steps:
       - name: set up perl
-        uses: shogo82148/actions-setup-perl@v1.41.0
+        uses: shogo82148/actions-setup-perl@v1.41.1
         with:
           perl-version: ${{ matrix.perl-version }}
       - uses: actions/download-artifact@v8
@@ -139,7 +139,7 @@ jobs:
 #    name: perl ${{ matrix.perl-version }} on ${{ matrix.os }}
 #    steps:
 #      - name: set up perl
-#        uses: shogo82148/actions-setup-perl@v1.41.0
+#        uses: shogo82148/actions-setup-perl@v1.41.1
 #        with:
 #          perl-version: ${{ matrix.perl-version }}
 #          distribution: strawberry # this option only used on windows
