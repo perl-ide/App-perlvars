@@ -16,7 +16,7 @@ jobs:
     container:
       image: perldocker/perl-tester:5.42
     steps:
-      - uses: actions/checkout@v6.0.3
+      - uses: actions/checkout@v7.0.0
       - name: Run Tests
         env:
           AUTHOR_TESTING: 1
@@ -34,7 +34,7 @@ jobs:
     container:
       image: perldocker/perl-tester:5.42
     steps:
-      - uses: actions/checkout@v6.0.3 # codecov wants to be inside a Git repository
+      - uses: actions/checkout@v7.0.0 # codecov wants to be inside a Git repository
       - uses: actions/download-artifact@v8
         with:
           name: build_dir
