@@ -1,4 +1,4 @@
 /App-perlvars*
+*.sw*
 .build
 local/
-*.sw*
