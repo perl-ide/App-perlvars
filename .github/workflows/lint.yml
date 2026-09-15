@@ -28,12 +28,9 @@ jobs:
           projects: |
             houseabsolute/precious
             houseabsolute/omegasort
-      - uses: perl-actions/install-with-cpm@v2.4
-        with:
-          install: |
-            App::perlvars
-            Perl::Tidy
-          sudo: false
+      - uses: perl-actions/setup-cpm@v1
+      - name: Install CPAN tools
+        run: cpm install --global --show-build-log-on-failure App::perlvars Perl::Tidy
       - name: precious lint
         env:
           EVENT_NAME: ${{ github.event_name }}
