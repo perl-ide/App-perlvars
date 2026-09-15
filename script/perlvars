@@ -96,6 +96,24 @@ tries to find unused variables in your Perl code. Please note that since
 L<Test::Vars> only finds unused variables contained within packages, code which
 does not have an explicit package name will not be checked.
 
+=head1 USING perlvars WITH precious
+
+L<precious|https://github.com/houseabsolute/precious> is a code quality tool
+that runs multiple linters and tidiers from a single configuration. You can add
+C<perlvars> as a lint command in your C<precious.toml>:
+
+    [commands.perlvars]
+    type    = "lint"
+    include = ["**/*.pm"]
+    cmd     = ["perlvars"]
+    ok-exit-codes = [0]
+    # perlvars exits 255 (not 1) when it finds unused/single-use variables.
+    lint-failure-exit-codes = [255]
+
+The C<lint-failure-exit-codes> setting is important: C<perlvars> exits with
+C<255> (not C<1>) when it finds unused or single-use variables, so precious
+needs to be told to treat C<255> as a lint failure rather than an error.
+
 =head1 CAVEATS
 
 As noted above, there are some serious limitations to this script, due to the
