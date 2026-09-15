@@ -1,5 +1,7 @@
 Revision history for App-perlvars
 
+{{$NEXT}}
+
 0.000007  2026-09-15 20:55:39Z
     - Add a --version flag to perlvars (GH#38) (Olaf Alders)
 
