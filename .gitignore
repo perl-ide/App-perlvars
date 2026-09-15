@@ -1,6 +1,4 @@
 /App-perlvars*
+*.sw*
 .build
 local/
-*.sw*
-.tidyall.d/
-tidyall.ERR
