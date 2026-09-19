@@ -20,6 +20,7 @@ my %WriteMakefileArgs = (
   "MIN_PERL_VERSION" => "5.014000",
   "NAME" => "App::perlvars",
   "PREREQ_PM" => {
+    "File::Spec" => 0,
     "Getopt::Long::Descriptive" => 0,
     "Moo" => 0,
     "PPI::Document" => 0,
