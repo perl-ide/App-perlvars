@@ -148,4 +148,37 @@ subtest 'package-less file that is not valid UTF-8' => sub {
     script_stderr_unlike(qr{ill-formed|decode});
 };
 
+subtest 'compile-time output from an analyzed file does not leak' => sub {
+
+    # The wrapped file's compile-time code runs during analysis. Its output --
+    # and the synthetic wrapper path -- must be suppressed; only the real
+    # finding should reach stderr.
+    script_fails(
+        [
+            'script/perlvars', '--scripts',
+            'test-data/scripts/noisy-stderr.pl'
+        ],
+        { exit => 255 },
+    );
+    script_stderr_like(qr{\$unused_noisy});
+    script_stderr_unlike(qr{compile-time noise});
+    script_stderr_unlike(qr{PerlvarsSyntheticPackage|__perlvars_wrapper__});
+};
+
+subtest 'a file that cannot be processed does not abort the batch' => sub {
+
+    # The first argument errors (not found); the run must still check the later
+    # file and report its findings rather than exiting on the first error.
+    script_fails(
+        [
+            'script/perlvars', '--scripts',
+            'test-data/scripts/does-not-exist.pl',
+            'test-data/scripts/unused.pl',
+        ],
+        { exit => 255 },
+    );
+    script_stderr_like(qr{could not be found});
+    script_stderr_like(qr{\$unused_in_anon});
+};
+
 done_testing();

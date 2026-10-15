@@ -5,6 +5,7 @@ use autodie;
 
 our $VERSION = '0.000009';
 
+use Encode        ();
 use File::Spec    ();
 use Path::Tiny    qw( path );
 use PPI::Document ();
@@ -56,8 +57,16 @@ sub validate_file {
         return ( 1, "$file is a dir" );
     }
 
-    my $doc = PPI::Document->new("$file");
-    return ( 1, "$file could not be parsed as Perl" ) unless $doc;
+    my $doc = _ppi_document($file);
+    unless ($doc) {
+
+        # A file we cannot parse is one we cannot analyze. Under lint_scripts
+        # that is a silent skip, consistent with the other unanalyzable files
+        # below, so a single bad file does not abort a batch run. Without the
+        # opt-in the old contract stands: report it as an error.
+        return ( 0, undef ) if $self->lint_scripts;
+        return ( 1, "$file could not be parsed as Perl" );
+    }
 
     my $package_stmt = $doc->find_first('PPI::Statement::Package');
     if ($package_stmt) {
@@ -81,10 +90,31 @@ sub validate_file {
     return $self->_validate_package_less( $file, $doc );
 }
 
+sub _ppi_document {
+    my $file = shift;    # Path::Tiny
+
+    # PPI reads the file as raw bytes. That is fine for ASCII and for high
+    # bytes that only appear in comments or strings, but a file with UTF-8
+    # characters in code (e.g. a Unicode identifier) trips the lexer. When the
+    # raw parse fails, retry against UTF-8-decoded source (leading BOM
+    # stripped). We only need the tree to spot a package statement and the
+    # __END__/__DATA__ cut line, both of which are unaffected by decoding; the
+    # body is still copied as raw bytes when wrapping (see _code_before_data).
+    my $doc = PPI::Document->new("$file");
+    return $doc if $doc;
+
+    my $bytes = $file->slurp_raw;
+    $bytes =~ s/\A\x{EF}\x{BB}\x{BF}//;
+    my $text = eval { Encode::decode( 'UTF-8', $bytes, Encode::FB_CROAK() ) };
+    return undef unless defined $text;    # not UTF-8 (e.g. Latin-1)
+
+    return PPI::Document->new( \$text );
+}
+
 sub _validate_package_less {
     my $self = shift;
-    my $file = shift;    # Path::Tiny
-    my $doc  = shift;    # PPI::Document
+    my $file = shift;                     # Path::Tiny
+    my $doc  = shift;                     # PPI::Document
 
     # Hand Test::Vars a synthetic "package X; sub Y { ...body... }":
     #   * Wrapping in a sub means require only *compiles* the file, not runs it,
@@ -116,16 +146,21 @@ sub _validate_package_less {
     # Compiling the file runs its compile-time code (use/BEGIN), which can print
     # or exit/die -- neither is an unused-variable failure, so both degrade to a
     # silent skip:
-    #   * STDOUT is redirected during analysis. (Test::Builder dup'd the real
-    #     STDOUT earlier, so a compile-time skip_all still prints its TAP plan --
-    #     but to STDOUT only, never STDERR, and the file is skipped anyway. We
-    #     don't repoint that shared singleton.)
+    #   * STDOUT and STDERR are redirected during analysis so the analyzed
+    #     file's own output (warnings, stray TAP, and messages that would name
+    #     the synthetic wrapper path) never leaks. Test::Vars forks a child that
+    #     inherits these handles, so its output is captured too. (Test::Builder
+    #     dup'd the real STDOUT earlier, so a compile-time skip_all still prints
+    #     its TAP plan to that copy; the file is skipped anyway.) The real
+    #     findings come back through test_vars's return value, not these handles.
     #   * skip_all etc. call exit(), so Test::Vars' child dies before writing to
     #     its pipe and the parent dies thawing an empty string; the eval traps it.
     my ( $exit_code, @msgs );
 
     open my $stdout_copy, '>&', \*STDOUT;
+    open my $stderr_copy, '>&', \*STDERR;
     open STDOUT,          '>',  File::Spec->devnull;
+    open STDERR,          '>',  File::Spec->devnull;
     my $analyzed = eval {
         ( $exit_code, @msgs ) = test_vars(
             "$wrapped",
@@ -135,6 +170,7 @@ sub _validate_package_less {
         1;
     };
     open STDOUT, '>&', $stdout_copy;
+    open STDERR, '>&', $stderr_copy;
 
     return 0, undef unless $analyzed;
 
@@ -306,11 +342,18 @@ variable in a package-less file.
 
 Wrapping a file for analysis C<require>s it, which executes its compile-time
 code (C<use> statements and C<BEGIN> blocks) even though its runtime statements
-do not run. A package-less file that cannot be compiled in isolation -- because
-it finds a sibling library at runtime (e.g. L<FindBin>), depends on a module
-that is not installed, or contains a C<#line> directive that hides its
-subroutines from L<Test::Vars> -- is skipped silently and returns a success
-exit code with no notes.
+do not run. The analyzed file's own output on C<STDOUT> and C<STDERR> is
+suppressed during analysis so it does not leak through C<perlvars>; the real
+findings are returned, not printed. A package-less file that cannot be analyzed
+-- because it finds a sibling library at runtime (e.g. L<FindBin>), depends on
+a module that is not installed, contains a C<#line> directive that hides its
+subroutines from L<Test::Vars>, or cannot be parsed as Perl at all -- is
+skipped silently and returns a success exit code with no notes.
+
+Files whose source is UTF-8 (for example a file with a Unicode identifier under
+C<use utf8>) are handled: the file body is always copied verbatim as raw bytes,
+and when the tree cannot be built from those raw bytes it is rebuilt from the
+UTF-8-decoded source.
 
 =cut
 
