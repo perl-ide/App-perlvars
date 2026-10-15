@@ -10,8 +10,10 @@ lint-failure-exit-codes = [2]
 [commands.perlvars]
 type    = "lint"
 include = ["**/*.pm"]
-# This fixture has deliberately unused variables (see t/).
-exclude = ["test-data/lib/Local/Unused.pm"]
+# Everything under test-data/ is fixtures (deliberately unused variables,
+# compile-time opt-outs, etc.) exercised by the test suite, not source to
+# self-lint.
+exclude = ["test-data/**/*.pm"]
 cmd     = ["perlvars"]
 ok-exit-codes = [0]
 lint-failure-exit-codes = [1]
