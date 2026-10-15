@@ -136,6 +136,24 @@ subtest 'package-less file that cannot compile in isolation' => sub {
     );
 };
 
+subtest 'ignored file that exits non-zero is still skipped' => sub {
+    my ( $exit_code, $msg, @errors )
+        = App::perlvars->new( lint_scripts => 1 )
+        ->validate_file('test-data/scripts/missing-module-nonzero-exit.pl');
+
+    # The wrapper cannot compile (missing module), so Test::Vars inspects
+    # nothing -- but an END block makes the analyzer child exit non-zero. That
+    # must not turn "could not be analyzed" into a reported finding.
+    is( $exit_code,     0,     '0 exit code (skipped, not failed)' );
+    is( $msg,           undef, 'no message' );
+    is( scalar @errors, 0,     'no findings leak' );
+    unlike(
+        "@errors",
+        qr/Test::Vars ignores|PerlvarsSyntheticPackage|__perlvars_wrapper__/,
+        'no synthetic wrapper details leak',
+    );
+};
+
 subtest 'package-less UTF-8 file is parsed and linted' => sub {
     my ( $exit_code, $msg, @errors )
         = App::perlvars->new( lint_scripts => 1 )
