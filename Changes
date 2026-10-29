@@ -20,6 +20,11 @@ Revision history for App-perlvars
       not installed) is now skipped even when it registers an END block that
       exits non-zero as the file is compiled; previously such a file leaked a
       "Test::Vars ignores ..." note and a non-zero exit code.
+    - Document a Test::Vars false-positive class in the perlvars CAVEATS: a
+      variable used only inside a block guarded by a compile-time constant that
+      is false in the current environment (e.g. an optional-XS fast path when
+      the XS module is not installed) is reported as "used once", because the
+      compiler folds the dead branch away before Test::Vars inspects the optree.
 
 0.000008  2026-09-19 02:00:35Z
     - Support linting package-less files, e.g. .t and .pl scripts, by wrapping
