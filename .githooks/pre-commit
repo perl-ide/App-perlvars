@@ -3,32 +3,27 @@
 # block direct commits to the default branch.
 #
 # Install (run once per clone):
-#   scripts/pre-commit --init
+#   .githooks/pre-commit --init
+#
+# This points git's core.hooksPath at .githooks, so every hook in that
+# directory is used and later edits take effect without reinstalling.
 
 set -eu
 
 if [ "${1:-}" = "--init" ]; then
     repo_root=$(git rev-parse --show-toplevel)
-    # Resolve the hooks dir via git so it works in plain repos, linked
-    # worktrees (where `.git` is a file pointing into the common git dir),
-    # and setups that override `core.hooksPath`. Run with `-C "$repo_root"`
-    # so the output is anchored under the worktree root regardless of
-    # which subdirectory the contributor invoked `--init` from.
-    hooks_dir=$(git -C "$repo_root" rev-parse --git-path hooks)
-    case "$hooks_dir" in
-        /*) ;;
-        *) hooks_dir="$repo_root/$hooks_dir" ;;
-    esac
-    hook_path="$hooks_dir/pre-commit"
-    target="$repo_root/scripts/pre-commit"
-    if [ -e "$hook_path" ] && [ ! -L "$hook_path" ]; then
-        echo "ERROR: $hook_path exists and is not a symlink." >&2
-        echo "Move or remove it, then re-run scripts/pre-commit --init." >&2
+    # A relative core.hooksPath is resolved against the root of whichever
+    # working tree runs the hook, so this also covers linked worktrees.
+    current=$(git -C "$repo_root" config --get core.hooksPath || true)
+    if [ -n "$current" ] && [ "$current" != ".githooks" ]; then
+        echo "ERROR: core.hooksPath is already set to '$current'." >&2
+        echo "Unset it (git config --unset core.hooksPath), then re-run" >&2
+        echo ".githooks/pre-commit --init." >&2
         exit 1
     fi
-    chmod +x "$target"
-    ln -sf "$target" "$hook_path"
-    echo "Installed pre-commit hook: $hook_path -> $target"
+    chmod +x "$repo_root/.githooks/pre-commit"
+    git -C "$repo_root" config core.hooksPath .githooks
+    echo "Set core.hooksPath to .githooks"
     exit 0
 fi
 
