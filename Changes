@@ -1,6 +1,6 @@
 Revision history for App-perlvars
 
-{{$NEXT}}
+0.000009  2026-10-29 23:05:56Z
     - When multiple files are passed, a file that cannot be found or parsed is
       now reported and skipped instead of aborting the whole run (the exit code
       is still non-zero). Previously the first such file ended the run early.
