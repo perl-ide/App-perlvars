@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/perl-ide/App-perlvars/actions/workflows/dzil-build-and-test/badge.svg)](https://github.com/perl-ide/App-perlvars/actions)
+[![Actions Status](https://github.com/perl-ide/App-perlvars/actions/workflows/dzil-build-and-test.yml/badge.svg)](https://github.com/perl-ide/App-perlvars/actions)
 [![codecov](https://codecov.io/gh/perl-ide/App-perlvars/branch/main/graph/badge.svg)](https://codecov.io/gh/perl-ide/App-perlvars)
 [![Kwalitee status](https://cpants.cpanauthors.org/dist/App-perlvars.png)](https://cpants.cpanauthors.org/dist/App-perlvars)
 [![GitHub tag](https://img.shields.io/github/tag/perl-ide/App-perlvars.svg)]()
