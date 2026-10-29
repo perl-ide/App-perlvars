@@ -1,4 +1,6 @@
 /App-perlvars*
 *.sw*
 .build
+.nono/
+.perl-version
 local/
