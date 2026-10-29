@@ -3,7 +3,7 @@ package App::perlvars;
 use Moo;
 use autodie;
 
-our $VERSION = '0.000009';
+our $VERSION = '0.000010';
 
 use Encode        ();
 use File::Spec    ();
